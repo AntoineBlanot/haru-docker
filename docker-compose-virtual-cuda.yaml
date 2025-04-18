@@ -1,0 +1,58 @@
+name: haru-virtual-cuda
+
+networks:
+  rosnet:
+    name: rosnet
+    driver: bridge
+
+services:
+  ros-master:
+    image: haru-os
+    entrypoint: [ "/ros_entrypoint.sh" ]
+    command: [ "roscore" ]
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+      - ROS_HOSTNAME=ros-master
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    networks:
+      - rosnet
+    runtime: nvidia
+    healthcheck:
+      test: [ "CMD-SHELL", "rosnode list || exit 0" ]
+      interval: 5s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+  ros-publisher:
+    image: haru-os
+    entrypoint: [ "/ros_entrypoint.sh" ]
+    command: [ "rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1" ]
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+      - ROS_HOSTNAME=ros-publisher
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    networks:
+      - rosnet
+    runtime: nvidia
+    depends_on:
+      ros-master:
+        condition: service_healthy
+
+  ros-listener:
+    image: haru-os
+    entrypoint: [ "/ros_entrypoint.sh" ]
+    command: [ "rostopic", "echo", "/hello" ]
+    environment:
+      - ROS_MASTER_URI=http://ros-master:11311
+      - ROS_HOSTNAME=ros-publisher
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    networks:
+      - rosnet
+    runtime: nvidia
+    depends_on:
+      ros-master:
+        condition: service_healthy

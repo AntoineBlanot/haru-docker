@@ -1,0 +1,35 @@
+name: haru-cuda
+
+services:
+  ros-publisher:
+    image: haru-os-cuda
+    entrypoint: [ "/ros_entrypoint.sh" ]
+    command: [ "rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1" ]
+    environment:
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    network_mode: host
+    runtime: nvidia
+
+  ros-listener:
+    image: haru-os-cuda
+    entrypoint: [ "/ros_entrypoint.sh" ]
+    command: [ "rostopic", "echo", "/hello" ]
+    environment:
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    network_mode: host
+    runtime: nvidia
+
+  ros-test:
+    image: haru-os
+    entrypoint: [ "/ros_entrypoint.sh" ]
+    command: [ "rostopic", "pub", "/idmind_tabletop/cmd_move_home", "std_msgs/Empty", "{}" ]
+    environment:
+      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    network_mode: host
+    runtime: nvidia
