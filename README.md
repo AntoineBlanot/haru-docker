@@ -18,7 +18,9 @@ Allow Docker GUI access:
 xhost +local:root
 ```
 
-Build Haru-OS image with:
+## Build images
+
+### Haru-OS
 ```
 cd haru-os
 docker build -t haru-os -f Dockerfile .
@@ -36,7 +38,7 @@ docker run --name haru-os -it --rm \
   haru-os
 ```
 
-If you need CUDA:
+### Haru-OS-CUDA
 ```
 cd haru-os-cuda
 docker pull nvidia/cuda:12.4.1-cudnn-runtime-ubuntu20.04
