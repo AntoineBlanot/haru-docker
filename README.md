@@ -7,7 +7,6 @@ Set ROS variable with:
 ```
 export HARU_IP=xxx.xxx.xx.xxx
 export ROS_MASTER_URI=http://${HARU_IP}:11311
-export ROS_IP=$(hostname -I | awk '{print $1}')
 ```
 
 Build Haru-OS image with:
@@ -43,8 +42,8 @@ docker run --name haru-os-cuda --gpus all -it --rm \
 
 ### With a Haru
 ```
-docker compose -f docker-compose-haru.yaml up
-# docker compose -f docker-compose-haru-cuda.yaml up
+docker compose -f docker-compose-haru.yaml --env-file haru-os/.env up
+# docker compose -f docker-compose-haru-cuda.yaml --env-file haru-os-cuda/.env up
 ```
 
 ### With a virtual Haru

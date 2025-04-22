@@ -7,9 +7,11 @@ services:
     command: [ "rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1" ]
     environment:
       - ROS_MASTER_URI=${ROS_MASTER_URI}
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES}
     network_mode: host
+    devices:
+    - /dev/snd:/dev/snd
     runtime: nvidia
 
   ros-listener:
@@ -18,9 +20,11 @@ services:
     command: [ "rostopic", "echo", "/hello" ]
     environment:
       - ROS_MASTER_URI=${ROS_MASTER_URI}
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES}
     network_mode: host
+    devices:
+    - /dev/snd:/dev/snd
     runtime: nvidia
 
   ros-test:
@@ -29,7 +33,9 @@ services:
     command: [ "rostopic", "pub", "/idmind_tabletop/cmd_move_home", "std_msgs/Empty", "{}" ]
     environment:
       - ROS_MASTER_URI=${ROS_MASTER_URI}
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES}
     network_mode: host
+    devices:
+    - /dev/snd:/dev/snd
     runtime: nvidia
