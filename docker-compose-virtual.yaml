@@ -8,15 +8,23 @@ networks:
 services:
   ros-master:
     image: haru-os
-    entrypoint: [ "/ros_entrypoint.sh" ]
-    command: [ "roscore" ]
+    entrypoint: ["/ros_entrypoint.sh"]
+    command: ["roscore"]
     environment:
+      - DISPLAY=${DISPLAY}
+      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
+      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-master
     networks:
       - rosnet
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
     healthcheck:
-      test: [ "CMD-SHELL", "rosnode list || exit 0" ]
+      test: ["CMD-SHELL", "rosnode list || exit 0"]
       interval: 5s
       retries: 5
       start_period: 10s
@@ -24,26 +32,63 @@ services:
 
   ros-publisher:
     image: haru-os
-    entrypoint: [ "/ros_entrypoint.sh" ]
-    command: [ "rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1" ]
+    entrypoint: ["/ros_entrypoint.sh"]
+    command: ["rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1"]
     environment:
+      - DISPLAY=${DISPLAY}
+      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
+      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-publisher
     networks:
       - rosnet
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
     depends_on:
       ros-master:
         condition: service_healthy
 
   ros-listener:
     image: haru-os
-    entrypoint: [ "/ros_entrypoint.sh" ]
-    command: [ "rostopic", "echo", "/hello" ]
+    entrypoint: ["/ros_entrypoint.sh"]
+    command: ["rostopic", "echo", "/hello"]
     environment:
+      - DISPLAY=${DISPLAY}
+      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
+      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-publisher
     networks:
       - rosnet
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    depends_on:
+      ros-master:
+        condition: service_healthy
+
+  ros-rqt:
+    image: haru-os
+    entrypoint: ["/ros_entrypoint.sh"]
+    command: ["rqt"]
+    environment:
+      - DISPLAY=${DISPLAY}
+      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
+      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
+      - ROS_MASTER_URI=http://ros-master:11311
+      - ROS_HOSTNAME=ros-rqt
+    networks:
+      - rosnet
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
     depends_on:
       ros-master:
         condition: service_healthy

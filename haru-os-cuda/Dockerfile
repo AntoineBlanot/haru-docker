@@ -26,11 +26,15 @@ RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main"
 
 ENV ROS_DISTRO=noetic
 
+# ROS basics
+RUN apt-get update && apt-get install -y \
+    ros-noetic-rqt ros-noetic-rqt-common-plugins ros-noetic-rqt-robot-plugins \
+    && rm -rf /var/lib/apt/lists/*
+
 # Haru basics
 RUN wget -O - http://robotics.upo.es/repos/focal_apt/debian/conf/harurepo.gpg.key | apt-key add -
 RUN wget -nc -P /etc/apt/sources.list.d/ http://robotics.upo.es/repos/focal_apt/debian/conf/harufocal.list
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update && apt-get install -y \
     ros-noetic-idmind-tabletop-msgs \
     ros-noetic-strawberry-ros-msgs \
     && rm -rf /var/lib/apt/lists/*

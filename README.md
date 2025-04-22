@@ -18,8 +18,12 @@ docker build -t haru-os -f Dockerfile .
 Run it with:
 ```
 docker run --name haru-os -it --rm \
-  --network=host \
+  --network host \
+  -e DISPLAY=${DISPLAY} \
+  -e LIBGL_ALWAYS_INDIRECT=0 \
+  -e DBUS_SESSION_BUS_ADDRESS=/dev/null \
   -e ROS_MASTER_URI=${ROS_MASTER_URI} \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
   haru-os
 ```
 
@@ -33,8 +37,12 @@ docker build -t haru-os-cuda -f Dockerfile .
 Run it with:
 ```
 docker run --name haru-os-cuda --gpus all -it --rm \
-  --network=host \
+  --network host \
+  -e DISPLAY=${DISPLAY} \
+  -e LIBGL_ALWAYS_INDIRECT=0 \
+  -e DBUS_SESSION_BUS_ADDRESS=/dev/null \
   -e ROS_MASTER_URI=${ROS_MASTER_URI} \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
   haru-os-cuda
 ```
 
@@ -48,6 +56,6 @@ docker compose -f docker-compose-haru.yaml --env-file haru-os/.env up
 
 ### With a virtual Haru
 ```
-docker compose -f docker-compose-virtual.yaml up
-# docker compose -f docker-compose-virtual-cuda.yaml up
+docker compose -f docker-compose-virtual.yaml --env-file haru-os/.env up
+# docker compose -f docker-compose-virtual-cuda.yaml --env-file haru-os-cuda/.env up
 ```
