@@ -8,14 +8,10 @@ networks:
 services:
   ros-master:
     image: haru-os
-    entrypoint: ["/ros_entrypoint.sh"]
+    entrypoint: ["/entrypoint.sh"]
     command: ["roscore"]
     environment:
       - DISPLAY=${DISPLAY}
-      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
-      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
-      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
-      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-master
     networks:
@@ -35,14 +31,10 @@ services:
 
   ros-publisher:
     image: haru-os
-    entrypoint: ["/ros_entrypoint.sh"]
+    entrypoint: ["/entrypoint.sh"]
     command: ["rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1"]
     environment:
       - DISPLAY=${DISPLAY}
-      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
-      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
-      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
-      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-publisher
     networks:
@@ -59,14 +51,10 @@ services:
 
   ros-listener:
     image: haru-os
-    entrypoint: ["/ros_entrypoint.sh"]
+    entrypoint: ["/entrypoint.sh"]
     command: ["rostopic", "echo", "/hello"]
     environment:
       - DISPLAY=${DISPLAY}
-      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
-      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
-      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
-      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-publisher
     networks:
@@ -83,14 +71,10 @@ services:
 
   ros-rqt:
     image: haru-os-cuda
-    entrypoint: ["/ros_entrypoint.sh"]
+    entrypoint: ["/entrypoint.sh"]
     command: ["rqt"]
     environment:
       - DISPLAY=${DISPLAY}
-      - LIBGL_ALWAYS_INDIRECT=${LIBGL_ALWAYS_INDIRECT:-0}
-      - DBUS_SESSION_BUS_ADDRESS=${DBUS_SESSION_BUS_ADDRESS:-/dev/null}
-      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES}
-      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-rqt
     networks:
