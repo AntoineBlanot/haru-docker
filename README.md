@@ -1,6 +1,10 @@
 # Haru Docker containers
 Docker containers for Haru projects.
 
+## Install
+Install the [Docker Engine](https://docs.docker.com/engine/install/ubuntu/) and follow the [post-installation steps](https://docs.docker.com/engine/install/linux-postinstall/).
+
+For CUDA support, also install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installing-the-nvidia-container-toolkit).
 
 ## Setup
 Set ROS variable with:
@@ -9,7 +13,14 @@ export HARU_IP=xxx.xxx.xx.xxx
 export ROS_MASTER_URI=http://${HARU_IP}:11311
 ```
 
-Build Haru-OS image with:
+Allow Docker GUI access:
+```
+xhost +local:root
+```
+
+## Build images
+
+### Haru-OS
 ```
 cd haru-os
 docker build -t haru-os -f Dockerfile .
@@ -25,7 +36,7 @@ docker run --name haru-os -it --rm \
   haru-os
 ```
 
-If you need CUDA:
+### Haru-OS-CUDA
 ```
 cd haru-os-cuda
 docker pull nvidia/cuda:12.4.1-cudnn-runtime-ubuntu20.04
