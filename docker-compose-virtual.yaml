@@ -1,4 +1,4 @@
-name: haru-virtual
+name: virtual
 
 networks:
   rosnet:
@@ -28,6 +28,26 @@ services:
       start_period: 10s
       timeout: 5s
 
+  ros-haru-simulator:
+    image: haru-simulator
+    entrypoint: ["/entrypoint.sh"]
+    command: [ "/bin/bash", "-c", "roslaunch haru_unity unity_app_launcher.launch && tail -f /dev/null" ]
+    environment:
+      - DISPLAY=${DISPLAY}
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - ROS_MASTER_URI=http://ros-master:11311
+      - ROS_HOSTNAME=ros-haru-simulator
+    network_mode: rosnet
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    runtime: nvidia
+    depends_on:
+      ros-master:
+        condition: service_healthy
+
   ros-publisher:
     image: haru-os
     entrypoint: ["/entrypoint.sh"]
@@ -36,13 +56,31 @@ services:
       - DISPLAY=${DISPLAY}
       - ROS_MASTER_URI=http://ros-master:11311
       - ROS_HOSTNAME=ros-publisher
-    networks:
-      - rosnet
+    network_mode: rosnet
     devices:
       - /dev/snd
       - /dev/bus/usb
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
+    depends_on:
+      ros-master:
+        condition: service_healthy
+
+  ros-publisher-cuda:
+    image: haru-os-cuda
+    entrypoint: ["/entrypoint.sh"]
+    command: ["rostopic", "pub", "/hello_cuda", "std_msgs/String", "data: 'Hello from Docker with CUDA'", "-r", "1"]
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_MASTER_URI=http://ros-master:11311
+      - ROS_HOSTNAME=ros-publisher-cuda
+    network_mode: rosnet
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    runtime: nvidia
     depends_on:
       ros-master:
         condition: service_healthy
@@ -54,14 +92,32 @@ services:
     environment:
       - DISPLAY=${DISPLAY}
       - ROS_MASTER_URI=http://ros-master:11311
-      - ROS_HOSTNAME=ros-publisher
-    networks:
-      - rosnet
+      - ROS_HOSTNAME=ros-listener
+    network_mode: rosnet
     devices:
       - /dev/snd
       - /dev/bus/usb
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
+    depends_on:
+      ros-master:
+        condition: service_healthy
+
+  ros-listener-cuda:
+    image: haru-os-cuda
+    entrypoint: ["/entrypoint.sh"]
+    command: ["rostopic", "echo", "/hello_cuda"]
+    environment:
+      - DISPLAY=${DISPLAY}
+      - ROS_MASTER_URI=http://ros-master:11311
+      - ROS_HOSTNAME=ros-listener-cuda
+    network_mode: rosnet
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    runtime: nvidia
     depends_on:
       ros-master:
         condition: service_healthy

@@ -1,13 +1,27 @@
-name: haru
+name: simulator
 
 services:
-  ros-publisher:
-    image: haru-os
-    entrypoint: ["/entrypoint.sh"]
-    command: ["rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1"]
+  ros-simulator:
+    image: haru-simulator
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "/bin/bash", "-c", "roslaunch haru_unity unity_app_launcher.launch && tail -f /dev/null" ]
     environment:
       - DISPLAY=${DISPLAY}
-      - ROS_MASTER_URI=${ROS_MASTER_URI}
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    network_mode: host
+    devices:
+      - /dev/snd
+      - /dev/bus/usb
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    runtime: nvidia
+
+  ros-publisher:
+    image: haru-os
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "rostopic", "pub", "/hello", "std_msgs/String", "data: 'Hello from Docker'", "-r", "1" ]
+    environment:
+      - DISPLAY=${DISPLAY}
     network_mode: host
     devices:
       - /dev/snd
@@ -17,11 +31,10 @@ services:
 
   ros-publisher-cuda:
     image: haru-os-cuda
-    entrypoint: ["/entrypoint.sh"]
-    command: ["rostopic", "pub", "/hello_cuda", "std_msgs/String", "data: 'Hello from Docker with CUDA'", "-r", "1"]
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "rostopic", "pub", "/hello_cuda", "std_msgs/String", "data: 'Hello from Docker with CUDA'", "-r", "1" ]
     environment:
       - DISPLAY=${DISPLAY}
-      - ROS_MASTER_URI=${ROS_MASTER_URI}
     network_mode: host
     devices:
       - /dev/snd
@@ -32,11 +45,10 @@ services:
 
   ros-listener:
     image: haru-os
-    entrypoint: ["/entrypoint.sh"]
-    command: ["rostopic", "echo", "/hello"]
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "rostopic", "echo", "/hello" ]
     environment:
       - DISPLAY=${DISPLAY}
-      - ROS_MASTER_URI=${ROS_MASTER_URI}
     network_mode: host
     devices:
       - /dev/snd
@@ -46,11 +58,10 @@ services:
 
   ros-listener-cuda:
     image: haru-os-cuda
-    entrypoint: ["/entrypoint.sh"]
-    command: ["rostopic", "echo", "/hello_cuda"]
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "rostopic", "echo", "/hello_cuda" ]
     environment:
       - DISPLAY=${DISPLAY}
-      - ROS_MASTER_URI=${ROS_MASTER_URI}
     network_mode: host
     devices:
       - /dev/snd
@@ -61,11 +72,10 @@ services:
 
   ros-rqt:
     image: haru-os
-    entrypoint: ["/entrypoint.sh"]
-    command: ["rqt"]
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "rqt" ]
     environment:
       - DISPLAY=${DISPLAY}
-      - ROS_MASTER_URI=${ROS_MASTER_URI}
     network_mode: host
     devices:
       - /dev/snd
