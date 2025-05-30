@@ -30,7 +30,7 @@ Run it with:
 docker run -it --rm --name haru-os \
   --network host \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e DISPLAY=${DISPLAY} -e ROS_MASTER_URI=${ROS_MASTER_URI} \
+  -e DISPLAY=${DISPLAY} \
   haru-os
 ```
 

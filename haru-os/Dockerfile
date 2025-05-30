@@ -1,26 +1,19 @@
-FROM ros:noetic-ros-core
+FROM ros:jazzy-ros-base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 # System basics
 RUN apt-get update && apt-get install -y \
-    curl wget git sudo locales \
+    curl wget nano vim lsb-release git \
     iproute2 net-tools iputils-ping \
     alsa-utils \
     clang build-essential cmake \
+    python3-pip python3-venv python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-# ROS basics
-RUN apt-get update && apt-get install -y \
-    ros-noetic-rqt ros-noetic-rqt-common-plugins ros-noetic-rqt-robot-plugins \
-    && rm -rf /var/lib/apt/lists/*
-
-# Haru basics
-RUN wget -O - http://robotics.upo.es/repos/focal_apt/debian/conf/harurepo.gpg.key | apt-key add -
-RUN wget -nc -P /etc/apt/sources.list.d/ http://robotics.upo.es/repos/focal_apt/debian/conf/harufocal.list
-RUN apt-get update && apt-get install -y \
-    ros-noetic-idmind-tabletop-msgs \
-    ros-noetic-strawberry-ros-msgs \
+# Ros additionals
+RUN apt update && apt install -y \
+    ros-${ROS_DISTRO}-rqt ros-${ROS_DISTRO}-rqt-common-plugins \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the entrypoint script into the container
