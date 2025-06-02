@@ -9,6 +9,10 @@ mkdir -p $XDG_RUNTIME_DIR
 chmod 700 $XDG_RUNTIME_DIR
 export QT_X11_NO_MITSHM=${QT_X11_NO_MITSHM:-1}
 
+# Set CUDA
+export NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+export NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-all}
+
 # Source ROS 2 distro environment
 source "/opt/ros/$ROS_DISTRO/setup.bash"
 

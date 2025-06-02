@@ -22,7 +22,7 @@ xhost +local:root
 
 ### Haru-OS
 ```
-docker build --rm -t haru-os -f haru-os/Dockerfile ./haru-os
+docker build --rm -t haru/haru-os:ros2 -f haru-os/Dockerfile ./haru-os
 ```
 
 Run it with:
@@ -32,21 +32,6 @@ docker run -it --rm --name haru-os \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=${DISPLAY} \
   haru-os
-```
-
-### Haru-OS-CUDA
-```
-docker pull nvidia/cuda:12.4.1-cudnn-runtime-ubuntu20.04
-docker build --rm -t haru-os-cuda -f haru-os-cuda/Dockerfile ./haru-os-cuda
-```
-
-Run it with:
-```
-docker run -it --rm --name haru-os-cuda --gpus all \
-  --network host \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e DISPLAY=${DISPLAY} -e ROS_MASTER_URI=${ROS_MASTER_URI} \
-  haru-os-cuda
 ```
 
 ### Haru-Simulator
