@@ -1,4 +1,4 @@
-FROM haru-os-cuda
+FROM haru/haru-os:ros1
 
 # Install X11/OpenGL Dependencies
 RUN apt update && apt install -y \
@@ -9,7 +9,8 @@ RUN apt update && apt install -y \
 
 # Install ROS dependencies
 RUN apt-get update && apt-get install -y \
-    ros-noetic-xacro \ 
+    ros-noetic-xacro \
+    ros-noetic-idmind-tabletop-msgs \
     ros-noetic-haru-unity ros-noetic-haru-utils \
     && rm -rf /var/lib/apt/lists/*
 

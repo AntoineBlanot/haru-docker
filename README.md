@@ -18,61 +18,48 @@ Allow Docker GUI access:
 xhost +local:root
 ```
 
-## Build images
+## Images and Applications
 
 ### Haru-OS
 ```
-docker build --rm -t haru-os -f haru-os/Dockerfile ./haru-os
+docker build --rm -t haru/haru-os:ros1 -f haru-os/Dockerfile ./haru-os
 ```
 
-Run it with:
+Run:
 ```
-docker run -it --rm --name haru-os \
+docker run -it --rm --name haru-os --gpus all \
   --network host \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=${DISPLAY} -e ROS_MASTER_URI=${ROS_MASTER_URI} \
-  haru-os
+  haru/haru-os:ros1
 ```
 
-### Haru-OS-CUDA
+Or compose: (recommended)
 ```
-docker pull nvidia/cuda:12.4.1-cudnn-runtime-ubuntu20.04
-docker build --rm -t haru-os-cuda -f haru-os-cuda/Dockerfile ./haru-os-cuda
-```
-
-Run it with:
-```
-docker run -it --rm --name haru-os-cuda --gpus all \
-  --network host \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e DISPLAY=${DISPLAY} -e ROS_MASTER_URI=${ROS_MASTER_URI} \
-  haru-os-cuda
+docker compose -f docker-compose-haru.yaml --env-file .env up
 ```
 
-### Haru-Simulator
+### Haru Simulator
 ```
-docker build --rm -t haru-simulator -f haru-simulator/Dockerfile ./haru-simulator
+docker build --rm -t haru/haru-simulator:ros1 -f haru-simulator/Dockerfile ./haru-simulator
 ```
 
-Run it with:
+Run:
 ```
 docker run -it --rm --name haru-simulator --gpus all \
   --network host \
   --device /dev/snd \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=${DISPLAY} -e NVIDIA_DRIVER_CAPABILITIES=all \
-  haru-simulator
+  haru/haru-simulator:ros1
 ```
 
-## Compose applications
-
-### With a Haru
-```
-docker compose -f docker-compose-haru.yaml --env-file .env up
-```
-
-### With a virtual Haru
+Or compose: (recommended)
 ```
 docker compose -f docker-compose-simulator.yaml --env-file .env up
-# docker compose -f docker-compose-virtual.yaml --env-file .env up
+```
+
+### Haru Virtual
+```
+docker compose -f docker-compose-virtual.yaml --env-file .env up
 ```
