@@ -9,8 +9,7 @@ For CUDA support, also install the [NVIDIA Container Toolkit](https://docs.nvidi
 ## Setup
 Set ROS variable with:
 ```
-export HARU_IP=xxx.xxx.xx.xxx
-export ROS_MASTER_URI=http://${HARU_IP}:11311
+export ROS_DOMAIN_ID=xxx
 ```
 
 Allow Docker GUI access:
@@ -30,7 +29,7 @@ Run:
 docker run -it --rm --name haru-os --gpus all \
   --network host --ipc host \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e DISPLAY=${DISPLAY} \
+  -e DISPLAY=${DISPLAY} -e ROS_DOMAIN_ID=${ROS_DOMAIN_ID} \
   haru/haru-os:ros2
 ```
 
