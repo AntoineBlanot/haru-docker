@@ -15,6 +15,7 @@ export NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
 
 # Set ROS
 export ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+echo "[INFO] Using ROS_DOMAIN_ID: $ROS_DOMAIN_ID"
 
 # Source ROS 2 distro environment
 source "/opt/ros/$ROS_DISTRO/setup.bash"
