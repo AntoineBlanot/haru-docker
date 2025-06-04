@@ -18,46 +18,23 @@ Allow Docker GUI access:
 xhost +local:root
 ```
 
-## Build images
+## Images and Applications
 
 ### Haru-OS
 ```
 docker build --rm -t haru/haru-os:ros2 -f haru-os/Dockerfile ./haru-os
 ```
 
-Run it with:
+Run:
 ```
-docker run -it --rm --name haru-os \
-  --network host \
+docker run -it --rm --name haru-os --gpus all \
+  --network host --ipc host \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=${DISPLAY} \
-  haru-os
+  haru/haru-os:ros2
 ```
 
-### Haru-Simulator
-```
-docker build --rm -t haru-simulator -f haru-simulator/Dockerfile ./haru-simulator
-```
-
-Run it with:
-```
-docker run -it --rm --name haru-simulator --gpus all \
-  --network host \
-  --device /dev/snd \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -e DISPLAY=${DISPLAY} -e NVIDIA_DRIVER_CAPABILITIES=all \
-  haru-simulator
-```
-
-## Compose applications
-
-### With a Haru
+Or compose: (recommended)
 ```
 docker compose -f docker-compose-haru.yaml --env-file .env up
-```
-
-### With a virtual Haru
-```
-docker compose -f docker-compose-simulator.yaml --env-file .env up
-# docker compose -f docker-compose-virtual.yaml --env-file .env up
 ```

@@ -11,10 +11,14 @@ RUN apt-get update && apt-get install -y \
     python3-pip python3-venv python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-# Ros additionals
+# ROS basics
 RUN apt update && apt install -y \
     ros-${ROS_DISTRO}-rqt ros-${ROS_DISTRO}-rqt-common-plugins \
     && rm -rf /var/lib/apt/lists/*
+
+# Haru basics
+RUN wget -O - http://robotics.upo.es/repos/focal_apt/debian/conf/harurepo.gpg.key | apt-key add -
+RUN wget -nc -P /etc/apt/sources.list.d/ http://robotics.upo.es/repos/focal_apt/debian/conf/harufocal.list
 
 # Copy the entrypoint script into the container
 COPY entrypoint.sh /entrypoint.sh
