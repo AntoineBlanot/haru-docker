@@ -6,8 +6,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN rm /etc/apt/sources.list.d/ros1-latest.list \
     && rm /usr/share/keyrings/ros1-latest-archive-keyring.gpg
 
-RUN apt-get update \
-    && apt-get install -y ca-certificates curl
+RUN apt-get update && apt-get install -y \
+    ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F "tag_name" | awk -F\" '{print $4}') ;\
     curl -L -s -o /tmp/ros-apt-source.deb "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo $VERSION_CODENAME)_all.deb" \
@@ -21,17 +22,25 @@ RUN apt-get update && apt-get install -y \
     iproute2 net-tools iputils-ping \
     alsa-utils \
     clang build-essential cmake \
-    python3-pip python3-venv \
-    && rm -rf /var/lib/apt/lists/*
+    python3-pip python3-venv python3-yaml && \
+    rm -rf /var/lib/apt/lists/*
 
 # ROS basics
 RUN apt-get update && apt-get install -y \
-    ros-noetic-rqt ros-noetic-rqt-common-plugins ros-noetic-rqt-robot-plugins \
-    && rm -rf /var/lib/apt/lists/*
+    ros-noetic-rqt ros-noetic-rqt-common-plugins ros-noetic-rqt-robot-plugins && \
+    rm -rf /var/lib/apt/lists/*
 
 # Haru basics
 RUN wget -O - http://robotics.upo.es/repos/focal_apt/debian/conf/harurepo.gpg.key | apt-key add -
 RUN wget -nc -P /etc/apt/sources.list.d/ http://robotics.upo.es/repos/focal_apt/debian/conf/harufocal.list
+RUN echo "yaml https://raw.githubusercontent.com/robotics-upo/rosdistro/master/rosdep.yaml" | sudo tee /etc/ros/rosdep/sources.list.d/50-haru.list
+
+RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && \
+    apt-get update && apt-get install -y \
+    python3-rosdep && \
+    rosdep init && \
+    rosdep update --include-eol-distros && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the entrypoint script into the container
 COPY entrypoint.sh /entrypoint.sh
