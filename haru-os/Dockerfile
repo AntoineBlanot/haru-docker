@@ -19,6 +19,14 @@ RUN apt update && apt install -y \
 # Haru basics
 RUN wget -O - http://robotics.upo.es/repos/focal_apt/debian/conf/harurepo.gpg.key | apt-key add -
 RUN wget -nc -P /etc/apt/sources.list.d/ http://robotics.upo.es/repos/focal_apt/debian/conf/harufocal.list
+RUN echo "yaml https://raw.githubusercontent.com/robotics-upo/rosdistro/master/rosdep.yaml" | sudo tee /etc/ros/rosdep/sources.list.d/50-haru.list
+
+RUN rm -f /etc/ros/rosdep/sources.list.d/20-default.list && \
+    apt-get update && apt-get install -y \
+    python3-rosdep && \
+    rosdep init && \
+    rosdep update --include-eol-distros && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the entrypoint script into the container
 COPY entrypoint.sh /entrypoint.sh

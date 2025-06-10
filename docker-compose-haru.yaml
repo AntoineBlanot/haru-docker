@@ -1,10 +1,11 @@
 name: haru
 
 services:
-  rqt:
+
+  test-publisher:
     image: haru/haru-os:ros2
     entrypoint: ["/entrypoint.sh"]
-    command: ["rqt"]
+    command: ["ros2", "topic", "pub", "-r", "1", "/hello", "std_msgs/msg/String", "data: 'Hello from Docker'"]
     environment:
       - DISPLAY=${DISPLAY}
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
@@ -16,10 +17,10 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
 
-  test-publisher:
+  rqt:
     image: haru/haru-os:ros2
     entrypoint: ["/entrypoint.sh"]
-    command: ["ros2", "topic", "pub", "-r", "1", "/hello", "std_msgs/msg/String", "data: 'Hello from Docker'"]
+    command: ["rqt"]
     environment:
       - DISPLAY=${DISPLAY}
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID}
