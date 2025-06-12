@@ -18,7 +18,7 @@ RUN export ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-inf
 
 # System basics
 RUN apt-get update && apt-get install -y \
-    curl wget git sudo locales \
+    curl wget nano vim lsb-release git \
     iproute2 net-tools iputils-ping \
     alsa-utils \
     clang build-essential cmake \
